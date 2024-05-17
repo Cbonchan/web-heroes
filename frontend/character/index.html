@@ -26,8 +26,7 @@
                                 <img src="" alt="" id="image" class="w-100">
                             </div>
                             <div class="col-6">
-                                <span id="loading-message">Loading...</span>
-                                <h2 id="name"></h2>
+                                <h2 id="name">Loading...</h2>
                                 <h4 id="alignment" class="text-decoration-underline"></h4>
                             </div>
                         </div>
@@ -44,7 +43,6 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script>
-        //importante para obtener el id del personaje
         const params = new URLSearchParams(window.location.search);
         const id = params.get("id");
 
@@ -57,8 +55,8 @@
         }
 
         function parse_data(character) {
-            const loading_message = document.getElementById("loading-message");
-            loading_message.remove()
+            // const loading_message = document.getElementById("loading-message");
+            // loading_message.remove()
 
             const name = document.getElementById("name");
             name.innerText = character.name;
@@ -86,26 +84,29 @@
             .then(parse_data)
             .catch(handle_error)
 
-        function delete_response(data){
-            if(data.success){
-                alert("Personaje eliminado")
-            }else{
-                alert("No se pudo eliminar el personaje")
+
+        function delete_response(data) {
+            if (data.success) {
+                alert("Character removed successfully")
+                window.location.href = "/";
+            } else {
+                alert("An error has occurred. Try again")
             }
-            window.location.href = "/";
         }
 
-        function remove_character(){
-            const confirmation = confirm(`Seguro que desea eliminar? ${id}`)
-            if (!confirmation){
-                return; 
+        function remove_character() {
+            const confirmation = confirm(`Are you sure you want to remove character ${id}?`)
+            if (!confirmation) {
+                return;
             }
-            fetch(`http://localhost:5000/characters/${id}`, 
-                {method: "DELETE"}
+
+            fetch(
+                `http://localhost:5000/characters/${id}`,
+                { method: "DELETE" }
             )
-            .then((response) => response.json()) // es lo mismo que response_received
-            .then(delete_response())
-            .catch()
+                .then((res) => res.json()) // === response_received
+                .then(delete_response)
+                .catch(handle_error)
         }
     </script>
 </body>
